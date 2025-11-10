@@ -1,29 +1,45 @@
 name: mydonet project
 
-on: 
+on:
   push:
     branches:
       - develop
 
 jobs:
-  dotnet_publish:
-    runs-on: 'ubuntu-latest'
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: code checkout
-        uses: actions/checkout@v5
-      - name: sonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v6
-        with:
-         mysonar: ${{secrets.SONAR_TOKEN }}
-         mysonarurl: ${{secrets.SONAR_HOST_URL}}
-
-      - name: install dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-        dotnet_version: "9.0.100"
+      # Step 1: Checkout source code
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: this is my dotnet publish command
-        run: dotnet publish -c Release src/Presentation/Nop.Web/Nop.Web.csproj -o pillakattupula Nandhini
+      # Step 2: Setup .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.100"
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore src/Presentation/Nop.Web/Nop.Web.csproj
+
+      # Step 4: Build project
+      - name: Build project
+        run: dotnet build src/Presentation/Nop.Web/Nop.Web.csproj --configuration Release --no-restore
+
+      # Step 5: SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=Nandini1229_nopCommerce
+            -Dsonar.organization=Nandini1229
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.verbose=true
+
+      # Step 6: Publish build output
+      - name: Publish .NET app
+        run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o pillakattupula_Nandhini
