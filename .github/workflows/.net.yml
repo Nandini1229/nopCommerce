@@ -43,3 +43,13 @@ jobs:
       # Step 6: Publish build output
       - name: Publish .NET app
         run: dotnet publish src/Presentation/Nop.Web/Nop.Web.csproj -c Release -o pillakattupula_Nandhini
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=nandini1229_nopCommerce
+            -Dsonar.organization=nandini1229
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.verbose=true
