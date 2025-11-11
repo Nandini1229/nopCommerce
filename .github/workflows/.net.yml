@@ -53,7 +53,7 @@ jobs:
 
       - name: Configure kubectl for EKS
         run: |
-          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+          aws eks update-kubeconfig --name unique-outfit-1762842639 --region ap-southeast-1
       
       - name: creating and switching namespaces
         run: |
